@@ -5,22 +5,20 @@ import { CostumerEntity } from '@/infra/typeorm/entities';
 import { Repository } from 'typeorm';
 import { CryptoService } from '@/infra/crypto/crypto.service';
 import { Role } from '@/common/enums';
-import { UserService } from '../user/user.service';
-import { EmailInUseError } from '@/error/email-in-use.error';
+import { ValidateService } from '@/common/validate/validate.service';
 
 @Injectable()
 export class CostumerService {
   constructor(
     @InjectRepository(CostumerEntity)
     private costumerRepository: Repository<CostumerEntity>,
-    private userService: UserService,
+    private validateService: ValidateService,
   ) {}
 
   async create(costumer: CreateCostumer) {
     const { user } = costumer;
 
-    if (this.userService.userExists(user))
-      throw new EmailInUseError(user.email);
+    await this.validateService.costumerExists(costumer);
 
     const hashedPassword = await CryptoService.hash(user.password);
     user.password = hashedPassword;

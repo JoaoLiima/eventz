@@ -11,12 +11,19 @@ export class UserService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async userExists(user: CreateUser) {
-    const { email } = user;
-    const userExists = await this.userRepository.findOne({
+  async emailExists({ email }: CreateUser) {
+    const emailExists = await this.userRepository.findOne({
       where: { email },
     });
 
-    return userExists ? true : false;
+    return emailExists ? true : false;
+  }
+
+  async phoneExists({ phone }: CreateUser) {
+    const phoneExists = await this.userRepository.findOne({
+      where: { phone },
+    });
+
+    return phoneExists ? true : false;
   }
 }
