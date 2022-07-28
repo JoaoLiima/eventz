@@ -46,10 +46,8 @@ export class UserEntity {
   @OneToOne(() => CostumerEntity, (costumer: CostumerEntity) => costumer.user)
   costumer?: CostumerEntity;
 
-  @OneToMany(() => AddressEntity, (address: AddressEntity) => address.user, {
-    eager: true,
-  })
-  address?: AddressEntity;
+  @OneToMany(() => AddressEntity, (address: AddressEntity) => address.user)
+  address?: AddressEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

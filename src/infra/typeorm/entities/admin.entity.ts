@@ -16,7 +16,7 @@ export class AdminEntity {
 
   @OneToMany(() => EventEntity, (event: EventEntity) => event.createdBy)
   @JoinColumn({ name: 'created_by' })
-  event: EventEntity;
+  event: EventEntity[];
 
   @OneToOne(() => UserEntity, (user: UserEntity) => user.admin, {
     cascade: ['insert'],

@@ -21,11 +21,8 @@ export class WalletEntity {
   @OneToMany(
     () => CreditCardEntity,
     (creditCard: CreditCardEntity) => creditCard.wallet,
-    {
-      eager: true,
-    },
   )
-  creditCard: CreditCardEntity;
+  creditCard: CreditCardEntity[];
 
   @OneToOne(
     () => CostumerEntity,

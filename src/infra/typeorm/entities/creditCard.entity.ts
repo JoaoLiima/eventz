@@ -32,7 +32,7 @@ export class CreditCardEntity {
 
   @ManyToOne(() => WalletEntity, (wallet: WalletEntity) => wallet.creditCard, {
     cascade: ['insert', 'update'],
-    eager: false,
+    eager: true,
   })
   @JoinColumn({
     name: 'wallet_id',

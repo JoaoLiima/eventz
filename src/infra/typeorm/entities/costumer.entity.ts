@@ -23,7 +23,7 @@ export class CostumerEntity {
   })
   wallet: WalletEntity;
 
-  @OneToOne(() => UserEntity, (user: UserEntity) => user.address, {
+  @OneToOne(() => UserEntity, (user: UserEntity) => user.costumer, {
     cascade: ['insert', 'update'],
     eager: false,
   })

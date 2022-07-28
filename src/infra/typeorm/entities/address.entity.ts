@@ -17,7 +17,7 @@ export class AddressEntity {
 
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.address, {
     cascade: ['insert', 'update'],
-    eager: false,
+    eager: true,
   })
   @JoinColumn({
     name: 'user_id',

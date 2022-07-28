@@ -23,7 +23,10 @@ export class EventEntity {
   @Column({ nullable: false })
   price: number;
 
-  @ManyToOne(() => AdminEntity, (admin: AdminEntity) => admin.event)
+  @ManyToOne(() => AdminEntity, (admin: AdminEntity) => admin.event, {
+    cascade: ['insert', 'update'],
+    eager: true,
+  })
   @JoinColumn({ name: 'created_by' })
   createdBy: AdminEntity;
 
