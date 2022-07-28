@@ -4,6 +4,8 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { CardTypes } from '@/common/enums/cardTypes.enum';
 import { WalletEntity } from '@/infra/typeorm/entities';
@@ -16,8 +18,8 @@ export class CreditCardEntity {
   @Column({ name: 'security_number', nullable: false })
   securityNumber: number;
 
-  @Column({ nullable: false })
-  number: number;
+  @Column({ name: 'card_number', nullable: false })
+  cardNumber: number;
 
   @Column({ nullable: false })
   expiration: string;
@@ -36,4 +38,10 @@ export class CreditCardEntity {
     name: 'wallet_id',
   })
   wallet: WalletEntity;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }
