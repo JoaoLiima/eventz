@@ -12,6 +12,7 @@ import {
   AddressEntity,
   AdminEntity,
   CostumerEntity,
+  CredentialEntity,
 } from '@/infra/typeorm/entities';
 
 @Entity('user')
@@ -37,8 +38,15 @@ export class UserEntity {
   @Column({ nullable: true, unique: true })
   email?: string;
 
-  @Column()
-  password?: string;
+  @OneToOne(
+    () => CredentialEntity,
+    (credential: CredentialEntity) => credential.user,
+    {
+      cascade: ['insert', 'update'],
+      eager: true,
+    },
+  )
+  credential?: CredentialEntity;
 
   @OneToOne(() => AdminEntity, (admin: AdminEntity) => admin.user)
   admin?: AdminEntity;
