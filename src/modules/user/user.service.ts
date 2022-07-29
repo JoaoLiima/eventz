@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DefaultError } from '@/error';
 import { CreateUser, UpdateUser } from '@/common/interfaces';
-import { Role } from '@/common/enums';
 import { mergeUsers } from './user.adapter';
 
 @Injectable()
@@ -19,7 +18,6 @@ export class UserService {
   async create(user: CreateUser) {
     const createdUser = this.userRepository.create({
       ...user,
-      role: Role.COSTUMER,
     });
     return await this.userRepository.save(createdUser);
   }

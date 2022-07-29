@@ -6,3 +6,7 @@ export * from '@/common/interfaces/costumer/update-costumer.interface';
 export * from '@/common/interfaces/costumer/paginated-costumer.interface';
 export * from '@/common/interfaces/costumer/costumer.interface';
 export * from '@/common/interfaces/credential/create-credential.interface';
+export * from '@/common/interfaces/admin/create-admin.interface';
+export * from '@/common/interfaces/admin/update-admin.interface';
+export * from '@/common/interfaces/admin/paginated-admin.interface';
+export * from '@/common/interfaces/admin/admin.interface';

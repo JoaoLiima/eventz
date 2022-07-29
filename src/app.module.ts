@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { typeOrmConfigFactory } from '@/config/typeormConfig.factory';
 import { CostumerModule } from '@/modules/costumer/costumer.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { CostumerModule } from '@/modules/costumer/costumer.module';
       inject: [ConfigService],
     }),
     CostumerModule,
+    AdminModule,
   ],
   controllers: [],
   providers: [],

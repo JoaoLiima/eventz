@@ -6,7 +6,7 @@ import {
 } from '@/error';
 import { UserService } from '@/modules/user/user.service';
 import { Injectable } from '@nestjs/common';
-import { CreateCostumer, User } from '@/common/interfaces';
+import { CreateAdmin, CreateCostumer, User } from '@/common/interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CostumerEntity } from '@/infra/typeorm/entities';
 import { Repository } from 'typeorm';
@@ -18,6 +18,10 @@ export class ValidateService {
     @InjectRepository(CostumerEntity)
     private costumerRepository: Repository<CostumerEntity>,
   ) {}
+
+  async adminExists({ user }: CreateAdmin) {
+    await this.userExists(user);
+  }
 
   async costumerExists(costumer: CreateCostumer) {
     const { cpf } = costumer;

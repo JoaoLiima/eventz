@@ -12,6 +12,7 @@ import { ValidateService } from '@/common/validate/validate.service';
 import { NotFoundError } from '@/error';
 import { UserService } from '../user/user.service';
 import { arrayCostumerAdapter, costumerAdapter } from './costumer.adapter';
+import { Role } from '@/common/enums';
 
 @Injectable()
 export class CostumerService {
@@ -30,6 +31,7 @@ export class CostumerService {
       ...costumer,
       user: {
         ...user,
+        role: Role.COSTUMER,
       },
     });
 
@@ -108,12 +110,12 @@ export class CostumerService {
     return costumerAdapter(costumer);
   }
 
-  async delete(id: number): Promise<string> {
+  async delete(id: number): Promise<{ message: string }> {
     const costumer = await this.findById(id);
 
     if (!costumer) throw new NotFoundError('costumer not found');
 
     const deletedCostumer = await this.userService.delete(costumer.user);
-    if (deletedCostumer) return 'User deleted successfully';
+    if (deletedCostumer) return { message: 'Costumer deleted successfully' };
   }
 }

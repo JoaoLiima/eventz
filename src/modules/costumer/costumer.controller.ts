@@ -49,7 +49,7 @@ export class CostumerController {
   }
 
   @Delete('/:id')
-  async delete(@Param('id') id: string): Promise<string> {
+  async delete(@Param('id') id: string): Promise<{ message: string }> {
     return this.costumerService.delete(+id);
   }
 }
