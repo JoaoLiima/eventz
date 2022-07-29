@@ -1,4 +1,9 @@
-import { CreateCostumer, UpdateCostumer } from '@/common/interfaces';
+import {
+  Costumer,
+  CreateCostumer,
+  PaginatedCostumer,
+  UpdateCostumer,
+} from '@/common/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CostumerEntity } from '@/infra/typeorm/entities';
@@ -17,7 +22,7 @@ export class CostumerService {
     private userService: UserService,
   ) {}
 
-  async create(costumer: CreateCostumer) {
+  async create(costumer: CreateCostumer): Promise<Costumer> {
     await this.validateService.costumerExists(costumer);
 
     const user = await this.userService.create(costumer.user);
@@ -28,11 +33,10 @@ export class CostumerService {
       },
     });
 
-    delete createdCostumer.user.credential;
-    return createdCostumer;
+    return costumerAdapter(createdCostumer);
   }
 
-  async find(pageNumber = 1, pageSize = 10) {
+  async find(pageNumber = 1, pageSize = 10): Promise<PaginatedCostumer> {
     const [result, total] = await this.costumerRepository.findAndCount({
       take: pageSize,
       skip: (pageNumber - 1) * pageSize,
@@ -45,7 +49,7 @@ export class CostumerService {
     };
   }
 
-  async findById(id: number) {
+  async findById(id: number): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({
       relations: ['user'],
       where: { costumerId: id },
@@ -56,7 +60,7 @@ export class CostumerService {
     return costumerAdapter(costumer);
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({
       relations: ['user'],
       where: {
@@ -71,7 +75,7 @@ export class CostumerService {
     return costumerAdapter(costumer);
   }
 
-  async findByPhone(phone: string) {
+  async findByPhone(phone: string): Promise<Costumer> {
     const costumer = await this.costumerRepository.findOne({
       relations: ['user'],
       where: {
@@ -86,7 +90,7 @@ export class CostumerService {
     return costumerAdapter(costumer);
   }
 
-  async update(data: UpdateCostumer) {
+  async update(data: UpdateCostumer): Promise<Costumer> {
     await this.validateService.userExists(data.user);
 
     const costumer = await this.costumerRepository.findOne({
@@ -99,17 +103,17 @@ export class CostumerService {
     if (!costumer) throw new NotFoundError('costumer not found');
 
     const user = await this.userService.update(costumer.user, data.user);
-    // costumer.user = user;
+    costumer.user = user;
 
     return costumerAdapter(costumer);
   }
 
-  async delete(id: number) {
+  async delete(id: number): Promise<string> {
     const costumer = await this.findById(id);
 
     if (!costumer) throw new NotFoundError('costumer not found');
 
     const deletedCostumer = await this.userService.delete(costumer.user);
-    if (deletedCostumer) return { message: 'User deleted successfully' };
+    if (deletedCostumer) return 'User deleted successfully';
   }
 }
