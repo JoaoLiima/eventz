@@ -36,7 +36,7 @@ export class UserEntity {
   phone?: string;
 
   @Column({ nullable: true, unique: true })
-  email?: string;
+  email: string;
 
   @OneToOne(
     () => CredentialEntity,

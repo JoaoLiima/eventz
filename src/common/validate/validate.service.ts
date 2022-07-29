@@ -6,7 +6,7 @@ import {
 } from '@/error';
 import { UserService } from '@/modules/user/user.service';
 import { Injectable } from '@nestjs/common';
-import { CreateCostumer, CreateUser } from '@/common/interfaces';
+import { CreateCostumer, User } from '@/common/interfaces';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CostumerEntity } from '@/infra/typeorm/entities';
 import { Repository } from 'typeorm';
@@ -29,17 +29,17 @@ export class ValidateService {
     if (costumerExists) throw new CpfInUseError(cpf);
   }
 
-  async userExists(user: CreateUser) {
+  async userExists(user: Partial<User>) {
     const { email, phone } = user;
 
     if (email) {
       this.isValidEmail(email);
 
-      const emailExists = await this.userService.emailExists(user);
+      const emailExists = await this.userService.emailExists(email);
       if (emailExists) throw new EmailInUseError(email);
     }
     if (phone) {
-      const phoneExists = await this.userService.phoneExists(user);
+      const phoneExists = await this.userService.phoneExists(phone);
       if (phoneExists) throw new PhoneInUseError(phone);
     }
   }

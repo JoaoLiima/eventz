@@ -1,11 +1,12 @@
-import { CreateCostumer } from '@/common/interfaces';
+import { CreateCostumer, UpdateCostumer } from '@/common/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CostumerEntity } from '@/infra/typeorm/entities';
 import { Repository } from 'typeorm';
-import { CryptoService } from '@/infra/crypto/crypto.service';
-import { Role } from '@/common/enums';
 import { ValidateService } from '@/common/validate/validate.service';
+import { NotFoundError } from '@/error';
+import { UserService } from '../user/user.service';
+import { arrayCostumerAdapter, costumerAdapter } from './costumer.adapter';
 
 @Injectable()
 export class CostumerService {
@@ -13,17 +14,13 @@ export class CostumerService {
     @InjectRepository(CostumerEntity)
     private costumerRepository: Repository<CostumerEntity>,
     private validateService: ValidateService,
+    private userService: UserService,
   ) {}
 
   async create(costumer: CreateCostumer) {
-    const { user } = costumer;
-
     await this.validateService.costumerExists(costumer);
 
-    const hashedPassword = await CryptoService.hash(user.password);
-    user.password = hashedPassword;
-    user.role = Role.COSTUMER;
-
+    const user = await this.userService.create(costumer.user);
     const createdCostumer = await this.costumerRepository.save({
       ...costumer,
       user: {
@@ -31,6 +28,88 @@ export class CostumerService {
       },
     });
 
+    delete createdCostumer.user.credential;
     return createdCostumer;
+  }
+
+  async find(pageNumber = 1, pageSize = 10) {
+    const [result, total] = await this.costumerRepository.findAndCount({
+      take: pageSize,
+      skip: (pageNumber - 1) * pageSize,
+      relations: ['user'],
+    });
+
+    return {
+      data: arrayCostumerAdapter(result),
+      total,
+    };
+  }
+
+  async findById(id: number) {
+    const costumer = await this.costumerRepository.findOne({
+      relations: ['user'],
+      where: { costumerId: id },
+    });
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    return costumerAdapter(costumer);
+  }
+
+  async findByEmail(email: string) {
+    const costumer = await this.costumerRepository.findOne({
+      relations: ['user'],
+      where: {
+        user: {
+          email: email,
+        },
+      },
+    });
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    return costumerAdapter(costumer);
+  }
+
+  async findByPhone(phone: string) {
+    const costumer = await this.costumerRepository.findOne({
+      relations: ['user'],
+      where: {
+        user: {
+          phone: phone,
+        },
+      },
+    });
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    return costumerAdapter(costumer);
+  }
+
+  async update(data: UpdateCostumer) {
+    await this.validateService.userExists(data.user);
+
+    const costumer = await this.costumerRepository.findOne({
+      relations: ['user'],
+      where: {
+        costumerId: data.costumerId,
+      },
+    });
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    const user = await this.userService.update(costumer.user, data.user);
+    // costumer.user = user;
+
+    return costumerAdapter(costumer);
+  }
+
+  async delete(id: number) {
+    const costumer = await this.findById(id);
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    const deletedCostumer = await this.userService.delete(costumer.user);
+    if (deletedCostumer) return { message: 'User deleted successfully' };
   }
 }
