@@ -3,13 +3,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import {
-  AddressEntity,
   AdminEntity,
   CostumerEntity,
   CredentialEntity,
@@ -53,9 +51,6 @@ export class UserEntity {
 
   @OneToOne(() => CostumerEntity, (costumer: CostumerEntity) => costumer.user)
   costumer?: CostumerEntity;
-
-  @OneToMany(() => AddressEntity, (address: AddressEntity) => address.user)
-  address?: AddressEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

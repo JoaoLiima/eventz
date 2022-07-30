@@ -7,7 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, WalletEntity } from '@/infra/typeorm/entities';
+import {
+  AddressEntity,
+  UserEntity,
+  WalletEntity,
+} from '@/infra/typeorm/entities';
 
 @Entity('costumer')
 export class CostumerEntity {
@@ -31,6 +35,9 @@ export class CostumerEntity {
     name: 'user_id',
   })
   user: UserEntity;
+
+  @OneToOne(() => AddressEntity, (address: AddressEntity) => address.costumer)
+  address?: AddressEntity[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

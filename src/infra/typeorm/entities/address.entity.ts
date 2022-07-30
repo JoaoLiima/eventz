@@ -3,26 +3,29 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
-  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { UserEntity, EventEntity } from '@/infra/typeorm/entities';
+import { EventEntity, CostumerEntity } from '@/infra/typeorm/entities';
 
 @Entity('address')
 export class AddressEntity {
   @PrimaryGeneratedColumn('increment', { name: 'address_id' })
   addressId: number;
 
-  @ManyToOne(() => UserEntity, (user: UserEntity) => user.address, {
-    cascade: ['insert', 'update'],
-    eager: true,
-  })
+  @OneToOne(
+    () => CostumerEntity,
+    (costumer: CostumerEntity) => costumer.address,
+    {
+      cascade: ['insert', 'update'],
+      eager: true,
+    },
+  )
   @JoinColumn({
-    name: 'user_id',
+    name: 'costumer_id',
   })
-  user?: UserEntity;
+  costumer?: CostumerEntity;
 
   @OneToOne(() => EventEntity, (event: EventEntity) => event.address, {
     cascade: ['insert', 'update'],
@@ -46,7 +49,7 @@ export class AddressEntity {
   street: string;
 
   @Column()
-  number: string;
+  number: number;
 
   @Column({ nullable: true })
   complement?: string;
