@@ -26,12 +26,14 @@ export class CostumerService {
   async create(costumer: CreateCostumer): Promise<Costumer> {
     await this.validateService.costumerExists(costumer);
 
-    const user = await this.userService.create(costumer.user);
+    const user = await this.userService.create({
+      ...costumer.user,
+      role: Role.COSTUMER,
+    });
     const createdCostumer = await this.costumerRepository.save({
       ...costumer,
       user: {
         ...user,
-        role: Role.COSTUMER,
       },
     });
 

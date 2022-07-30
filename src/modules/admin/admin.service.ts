@@ -26,12 +26,14 @@ export class AdminService {
   async create(admin: CreateAdmin): Promise<Admin> {
     await this.validateService.adminExists(admin);
 
-    const user = await this.userService.create(admin.user);
+    const user = await this.userService.create({
+      ...admin.user,
+      role: Role.ADMIN,
+    });
     const createdAdmin = await this.adminRepository.save({
       ...admin,
       user: {
         ...user,
-        role: Role.ADMIN,
       },
     });
 

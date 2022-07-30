@@ -10,3 +10,5 @@ export * from '@/common/interfaces/admin/create-admin.interface';
 export * from '@/common/interfaces/admin/update-admin.interface';
 export * from '@/common/interfaces/admin/paginated-admin.interface';
 export * from '@/common/interfaces/admin/admin.interface';
+export * from '@/common/interfaces/credential/credential.interface';
+export * from '@/common/interfaces/login/login.interface';
