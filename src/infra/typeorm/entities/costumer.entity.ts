@@ -16,7 +16,7 @@ import {
 @Entity('costumer')
 export class CostumerEntity {
   @PrimaryGeneratedColumn('increment', { name: 'costumer_id' })
-  costumerId: string;
+  costumerId: number;
 
   @Column({ nullable: false })
   cpf: string;
