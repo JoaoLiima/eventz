@@ -20,6 +20,7 @@ export class AlterAddress1659199968917 implements MigrationInterface {
         name: 'costumer_id',
         type: 'integer',
         isUnique: true,
+        isNullable: true,
       }),
     );
     await queryRunner.createForeignKey(
