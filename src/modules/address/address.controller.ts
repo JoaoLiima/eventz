@@ -23,7 +23,6 @@ export class AddressController {
     @Body() address: CreateAddress,
     @User() user: LoggedUser,
   ): Promise<Address> {
-    console.log(user);
     return this.addressService.create(address, user);
   }
 

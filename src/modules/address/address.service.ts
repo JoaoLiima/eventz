@@ -34,14 +34,12 @@ export class AddressService {
     const oldAddress = await this.addressRepository.findOne({
       addressId: address.addressId,
     });
-    console.log(oldAddress);
     if (!oldAddress) throw new NotFoundError('address not found');
 
     return this.addressRepository.save({ ...oldAddress, ...address });
   }
 
   async delete(id: number) {
-    console.log(id);
     const address = await this.addressRepository.findOne({
       addressId: id,
     });
