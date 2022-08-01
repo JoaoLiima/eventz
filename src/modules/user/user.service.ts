@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CredentialEntity, UserEntity } from '@/infra/typeorm/entities';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BadRequestError } from '@/error';
+import { BadRequestError, NotFoundError } from '@/error';
 import { CreateUser, UpdateUser, User } from '@/common/interfaces';
 import { mergeUsers } from './user.adapter';
 
@@ -24,6 +24,18 @@ export class UserService {
     });
 
     if (!user) throw new BadRequestError('invalid email or password');
+
+    return user;
+  }
+
+  async findById(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: {
+        userId: id,
+      },
+    });
+
+    if (!user) throw new NotFoundError('user not found');
 
     return user;
   }

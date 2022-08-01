@@ -64,6 +64,21 @@ export class AdminService {
     return adminAdapter(admin);
   }
 
+  async findByUserId(id: number): Promise<Admin> {
+    const admin = await this.adminRepository.findOne({
+      relations: ['user'],
+      where: {
+        user: {
+          userId: id,
+        },
+      },
+    });
+
+    if (!admin) throw new NotFoundError('admin not found');
+
+    return adminAdapter(admin);
+  }
+
   async findByEmail(email: string): Promise<Admin> {
     const admin = await this.adminRepository.findOne({
       relations: ['user'],

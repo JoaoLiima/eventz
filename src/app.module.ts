@@ -3,9 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { typeOrmConfigFactory } from '@/config/typeormConfig.factory';
 import { CostumerModule } from '@/modules/costumer/costumer.module';
-import { AdminModule } from './modules/admin/admin.module';
-import { AuthModule } from './modules/auth/auth.module';
-import { AddressModule } from './modules/address/address.module';
+import { AdminModule } from '@/modules/admin/admin.module';
+import { AuthModule } from '@/modules/auth/auth.module';
+import { AddressModule } from '@/modules/address/address.module';
+import { EventModule } from '@/modules/event/event.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AddressModule } from './modules/address/address.module';
     AdminModule,
     AuthModule,
     CostumerModule,
+    EventModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: () => typeOrmConfigFactory(),

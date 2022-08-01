@@ -1,4 +1,5 @@
 import { Role } from '@/common/enums';
+import { UnauthorizedError } from '@/error';
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from './roles.decorator';
@@ -16,6 +17,14 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.some((role) => user.role === role);
+    const isAllowed = requiredRoles.some((role) => user.role === role);
+
+    if (!isAllowed) {
+      throw new UnauthorizedError(
+        'the current user does not have privileges to perform this action',
+      );
+    }
+
+    return isAllowed;
   }
 }
