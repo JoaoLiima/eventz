@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { AdminService } from '@/modules/admin/admin.service';
 import {
@@ -15,12 +16,16 @@ import {
   PaginatedAdmin,
   UpdateAdmin,
 } from '@/common/interfaces';
+import { JwtAuthGuard } from '@/guards/jwt/jwt-auth.guard';
+import { Public } from '@/common/decorators/public-route.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('admin')
 export class AdminController {
   constructor(private adminService: AdminService) {}
 
   @Post()
+  @Public()
   async createAdmin(@Body() data: CreateAdmin): Promise<Admin> {
     return this.adminService.create(data);
   }

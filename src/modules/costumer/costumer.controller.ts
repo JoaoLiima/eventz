@@ -7,6 +7,7 @@ import {
   Patch,
   Delete,
   Param,
+  UseGuards,
 } from '@nestjs/common';
 import { CostumerService } from '@/modules/costumer/costumer.service';
 import {
@@ -15,12 +16,16 @@ import {
   PaginatedCostumer,
   UpdateCostumer,
 } from '@/common/interfaces';
+import { JwtAuthGuard } from '@/guards/jwt/jwt-auth.guard';
+import { Public } from '@/common/decorators/public-route.decorator';
 
+@UseGuards(JwtAuthGuard)
 @Controller('costumer')
 export class CostumerController {
   constructor(private costumerService: CostumerService) {}
 
   @Post()
+  @Public()
   async createCostumer(@Body() data: CreateCostumer): Promise<Costumer> {
     return this.costumerService.create(data);
   }
