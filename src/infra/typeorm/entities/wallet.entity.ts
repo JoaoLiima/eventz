@@ -22,7 +22,7 @@ export class WalletEntity {
     () => CreditCardEntity,
     (creditCard: CreditCardEntity) => creditCard.wallet,
   )
-  creditCard: CreditCardEntity[];
+  creditCard?: CreditCardEntity[];
 
   @OneToOne(
     () => CostumerEntity,

@@ -5,8 +5,13 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  ManyToMany,
 } from 'typeorm';
-import { AddressEntity, AdminEntity } from '@/infra/typeorm/entities';
+import {
+  AddressEntity,
+  AdminEntity,
+  CostumerEntity,
+} from '@/infra/typeorm/entities';
 import { EventType } from '@/common/enums/eventType.enum';
 
 @Entity('event')
@@ -35,4 +40,10 @@ export class EventEntity {
     eager: false,
   })
   address: AddressEntity;
+
+  @ManyToMany(
+    () => CostumerEntity,
+    (costumer: CostumerEntity) => costumer.events,
+  )
+  costumers: CostumerEntity[];
 }

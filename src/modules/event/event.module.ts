@@ -14,5 +14,6 @@ import { AddressModule } from '../address/address.module';
   ],
   controllers: [EventController],
   providers: [EventService],
+  exports: [EventService],
 })
 export class EventModule {}

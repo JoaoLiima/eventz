@@ -6,7 +6,7 @@ import {
 } from '@/common/interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CostumerEntity } from '@/infra/typeorm/entities';
+import { CostumerEntity, WalletEntity } from '@/infra/typeorm/entities';
 import { Repository } from 'typeorm';
 import { ValidateService } from '@/common/validate/validate.service';
 import { NotFoundError } from '@/error';
@@ -19,6 +19,8 @@ export class CostumerService {
   constructor(
     @InjectRepository(CostumerEntity)
     private costumerRepository: Repository<CostumerEntity>,
+    @InjectRepository(WalletEntity)
+    private walletRepository: Repository<WalletEntity>,
     private validateService: ValidateService,
     private userService: UserService,
   ) {}
@@ -35,6 +37,10 @@ export class CostumerService {
       user: {
         ...user,
       },
+    });
+
+    await this.walletRepository.save({
+      costumer: createdCostumer,
     });
 
     return costumerAdapter(createdCostumer);
@@ -85,6 +91,21 @@ export class CostumerService {
       where: {
         user: {
           phone: phone,
+        },
+      },
+    });
+
+    if (!costumer) throw new NotFoundError('costumer not found');
+
+    return costumerAdapter(costumer);
+  }
+
+  async findByUserId(id: number): Promise<Costumer> {
+    const costumer = await this.costumerRepository.findOne({
+      relations: ['user', 'wallet', 'events'],
+      where: {
+        user: {
+          userId: id,
         },
       },
     });

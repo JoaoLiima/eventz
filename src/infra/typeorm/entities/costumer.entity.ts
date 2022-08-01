@@ -3,12 +3,15 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import {
   AddressEntity,
+  EventEntity,
   UserEntity,
   WalletEntity,
 } from '@/infra/typeorm/entities';
@@ -35,6 +38,23 @@ export class CostumerEntity {
     name: 'user_id',
   })
   user: UserEntity;
+
+  @ManyToMany(() => EventEntity, (event: EventEntity) => event.costumers, {
+    cascade: ['insert', 'update'],
+    eager: false,
+  })
+  @JoinTable({
+    name: 'costumer_event',
+    joinColumn: {
+      name: 'costumer_id',
+      referencedColumnName: 'costumerId',
+    },
+    inverseJoinColumn: {
+      name: 'event_id',
+      referencedColumnName: 'eventId',
+    },
+  })
+  events: EventEntity[];
 
   @OneToOne(() => AddressEntity, (address: AddressEntity) => address.costumer)
   address?: AddressEntity[];
