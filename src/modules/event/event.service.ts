@@ -28,6 +28,9 @@ export class EventService {
     if (event.type === EventType.PRESENTIAL && !event.address)
       throw new BadRequestError('presential events requires an address');
 
+    if (event.type === EventType.REMOTE && event.address)
+      throw new BadRequestError('remote events cant have an address');
+
     const admin = await this.adminService.findByUserId(user.userId);
 
     const createdEvent = await this.eventRepository.save({
@@ -76,14 +79,12 @@ export class EventService {
   }
 
   async findById(id: number): Promise<Event> {
-    const event = await this.eventRepository.findOne({
+    return await this.eventRepository.findOne({
       relations: ['address'],
       where: {
         eventId: id,
       },
     });
-
-    return event;
   }
 
   async update(event: UpdateEvent): Promise<Event> {
@@ -110,9 +111,12 @@ export class EventService {
     ) {
       await this.addressService.delete(oldEvent.address.addressId);
       delete oldEvent.address;
+      delete event.address;
     }
 
-    return this.eventRepository.save({ ...oldEvent, ...event });
+    const updatedEvent = { ...oldEvent, ...event };
+
+    return this.eventRepository.save(updatedEvent);
   }
 
   async delete(id: number) {
